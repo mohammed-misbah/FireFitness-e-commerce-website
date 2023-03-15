@@ -22,6 +22,7 @@
     integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
     crossorigin="anonymous"></script>
 
+   
     <link rel="stylesheet" href="{% static 'css/linearicons.css' %}">
     <link rel="stylesheet" href="{% static 'css/owl.carousel.css' %}">
     <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
@@ -33,6 +34,7 @@
 </head>
 
 <body>
+
 
     <!-- Start Header Area -->
 	<header class="header_area sticky-header">
@@ -136,7 +138,9 @@
                                 <th scope="col">Product</th>
                                
                                 <th scope="col">Price</th>
+                             
                                 <th scope="col">Quantity</th>
+                                <th scope="col"> Remove</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -150,15 +154,27 @@
                                             <img src="/media/{{ i.product.img1}}" width="140" height="160" alt="">
                                         </div>
                                         <div class="media-body">
-                                            <a href="{{ i.get_url }}" class="title text-dark"><p>{{ i.product.prdct_name }}</p></a>
+                                            <a href="{{ i.get_url }}" class="title text-dark"><p>{{ i.product.prdct_name }}</p>
+                                            <br>
+                                            <p>
+                                            
+                                              {% for item in i.variation.all %}
+                                            
+                                              {{item}}
+                                            
+                                              {% endfor %}
+                                            
+                                             
+                                            </p>
+                                            </a>
                                         </div>
-                                        <p class="text-muted small">
-                                           {% if i.variations.all %}
-                                                {% for item in i.variations.all %}
+                                        {% comment %} <p class="text-muted small">
+                                           {% if i.variation.all %}
+                                                {% for item in i.variation.all %}
                                                      {{ item.variation_category | capfirst }}:{{ item.variation_value | capfirst }} <br>
                                                 {% endfor %}
                                             {% endif %}
-                                        </p>
+                                        </p> {% endcomment %}
                                     </div>
                                 </td>
                                 <td>
@@ -167,28 +183,52 @@
                                       <small class="text-muted">Rs:{{i.price|floatformat:"2"}}</small>
                                     </div>
                                 </td>
-                                <td>
-                                    <div class="product_count">
+                                 {% comment %} <td class="column-2">
+                                   
+                                    <figcaption class="info">
                                         
-                                        <div class="input-group-append">
-                                            <form action="{% url 'add_cart' i.product.id %}" method="POST">
-                                                {% csrf_token %}
-                                                {% if cart_item.variation.all %}
-                                                {% for item in cart_item.variation.all %}
-                                                       <input type="hidden" name="{{ item.variation_category | lower }}" value="{{ item.variation_value | capfirst }}">
+                                        <p class="text-muted small">
+                                           
+                                            {% if i.variation.all %}
+                                                {% for item in i.variation.all %}
+                                                    {{ item.variation_category | capfirst }} : {{ item.variation_value | capfirst }} <br>
                                                 {% endfor %}
-                                                {% endif %}
-                                                <button class="increase items-count" type="submit" id="button-minus"><i class="lnr lnr-chevron-up"></i></button>
-                                            </form>
-                                        </div>
-                                            <input type="text" name="qty" id="sst" maxlength="12" value="{{ i.quantity }}" title="Quantity:" class="input-text qty">
-                                        <div class="input-group-append">
-                                          <a href="{% url 'decrease_quantity' i.product.id i.id %}" class="reduced items-count" type="button" id="button-minus"><i class="lnr lnr-chevron-down"></i></a>
-                                        </div>
+                                            {% endif %}
+                                        </p>
+                                    </figcaption>
+                                </td> {% endcomment %}
+
+                               <td>
+                                <div class="input-group input-spinner">
+                                    <div class="input-group-prepend">
+                                        <button class="btn btn-light update" onclick="quantity_minus('{{i.id}}','{{ i.product.price }}')" > <i class="fa fa-minus"></i> </button>
+    
                                     </div>
-                                </td>
+                                        <input type="text" name="qty" id="{{i.id}}" maxlength="12" size="3px" value="{{ i.quantity }}" title="Quantity:" class="input-text qty">
+                                    <div class="input-group-append">
+                        
+                                        <div class="btn btn-light update" onclick="quantity_plus('{{i.id}}','{{i.product.price}}')"><i class="fa fa-plus"></i> </div>
+
+                                    </div>
+                                    
+                                         </div> 
+                                </td> 
+                                {% comment %} <td class="text-right">  
+                                   <a href="{% url 'delete_cart_item' i.id i.product.id %}" onclick="return confirm('Are you sure you want to delete this item?')" class="primary-btn">Remove</a> 
+                                </td> {% endcomment %}
+                                {% comment %} <div class="input-group input-spinner">
+                                    <div class="input-group-prepend">
+                                    <button class="btn btn-light update" onclick="quantity_minus('{{i.id}}','{{ i.product.price }}')" > <i class="fa fa-minus"></i> </button>
+
+                                    </div>
+                                    <python manage.py runserverinput type="text" class="form-control" id="{{i.id}}" value="{{ i.quantity }}">
+                                    <div class="input-group-append">
+                                       <button class="btn btn-light update" onclick="quantity_plus('{{i.id}}','{{ i.product.price }}')"> <i class="fa fa-plus"></i> </button>
+
+                                    </div>
+                                </div>  {% endcomment %}
                                 <td class="text-right">  
-                                   <a href="{% url 'delete_cart_item' i.id%}" onclick="return confirm('Are you sure you want to delete this item?')" class="primary-btn">Remove</a> 
+                                   <a href="{% url 'remove_cart' i.id  %}" onclick="return confirm('Are you sure you want to delete this item?')" class="primary-btn">Remove</a> 
                                 </td>
                             </tr>
                             {% endfor %}
@@ -242,21 +282,21 @@
                                         <thead>
                                             <tr>
                                                 <th>Total:</th>
-                                                <th>Rs:{{ total|floatformat:"2" }}</th>
+                                                <th id="total">Rs:{{ total|floatformat:"2" }}</th>
                                             </tr>
                                           <tr>
                                             <th scope="col">Tax:</th>
-                                            <th scope="col">Rs:{{tax|floatformat:"2"}}</th>
+                                            <th scope="col" id="tax">Rs:{{tax|floatformat:"2"}}</th>
                                           </tr>
                                           <tr>
                                             <th scope="col">Coupon Discount:</th>
-                                            <th scope="col">Rs:{{discount}}</th>
+                                            <th scope="col" id="discount">Rs:{{discount}}</th>
                                           </tr>
                                         </thead>
                                         <tbody>
                                           <tr>
                                             <td><strong>Grand Total:</strong></td>
-                                            <td><strong>Rs:{{grand_total|floatformat:"2"}}</strong></td>
+                                            <td><strong id="grandtotal">Rs:{{grand_total|floatformat:"2"}}</strong></td>
                                           </tr>
                                         </tbody>
                                       </table>
@@ -366,6 +406,7 @@
             
         </div>
     </footer>
+
     <!-- End footer Area -->
 
     <script src="{% static 'js/vendor/jquery-2.2.4.min.js' %}"></script>
@@ -383,61 +424,89 @@
 	<script src="{% static 'js/gmaps.min.js' %}"></script>
 	<script src="{% static 'js/main.js' %}"></script>
 
-    <!-- <script>
- function decreaseQuantity(qnty,id,sub_total,c_id){
-    var qnty= $('#'+qnty)
-    var sub_total =$('#'+sub_total)
- 
-  $.ajax({
-    type: "GET"
-    url: "/cart/decrease_quantity",
-    data: {
-      'id':id,
-      'c_id':c_id
-    },
-    success: function (response) {
-        if(r.status==true){
+<script>
+    
+    function quantity_minus(id) {
+        let qty = document.getElementById(id).value;
+        
+        if(qty>1){
+            quantity = document.getElementById(id + 'q')
+            quantity = document.getElementById(id + 'q')
+            $.ajaxSetup({
+                data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
+            });
+            $.ajax({
+                url: "/updatecart",
+                method: "POST",
+                data: { 'cart_id': id, 'quantity': quantity, 'task': 'minus' 
+            },
+                success: function (data) {
+                    document.getElementById(id).value=data['updated_quantity'];
+                    let dataR = bill(document.getElementById(id+'price').innerHTML.slice(1),document.getElementById('total').innerHTML.slice(1).trim(),'minus');
+                    document.getElementById('total').innerHTML ="₹ " + data.total;
+                    document.getElementById('tax').innerHTML = "₹ " + data.tax;
+                    document.getElementById('grandtotal').innerHTML = "₹ " + dataR.grandtotal;
+                    
+                },
+               
+            })
+        } else {
+            swal({
+                title: "Oops!",
+                text: "Click Remove Cart ",
+                type: "failed"
+            })
+        }
+    }
 
-            $(qnty).val(r.quantity)
-            $(sub_total).text("Rs:"+r.sub_total)
-            $('#total').text("Rs:"+r.total)
-            $('#total_price').text("Rs:"+r.total_price)
-            $('#saved').text("-"+r.saved)
-        }else{
-            console.log('not possible')
-        }
-        },
-        error:function(r){
-            alert('Error Occured')
-        }
-  });
+
+
+</script>
+<script>
+{% comment %} Quantity Plus {% endcomment %}
+
+function quantity_plus(id) {
+    let qty = document.getElementById(id).value;
+    if(qty<10){
+        quantity = document.getElementById(id + 'q')
+        quantity = document.getElementById(id + 'q')
+        $.ajaxSetup({
+            data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
+        });
+        $.ajax({
+            url: "/updatecart",
+            method: "POST",
+            data: { 'cart_id': id, 'quantity': quantity, 'task': 'plus' },
+            success: function (data) {
+                document.getElementById(id).value=data['updated_quantity'];
+                let dataR = bill(document.getElementById(id+'price').innerHTML.slice(1),document.getElementById('total').innerHTML.slice(1).trim(),'plus');
+                document.getElementById('total').innerHTML ="₹ " + data.total;
+                document.getElementById('tax').innerHTML = "₹ " + data.tax;
+                document.getElementById('grandTotal').innerHTML = "₹ " + data.grandtotal;
+                
+            },
+            error: function (){
+                swal({
+                    title: "Oops!",
+                    text: "Quantity limit Exceeded!",
+                    type: "failed"
+                })
+            }
+        })
+    } 
 }
-
-
-function increaseQuantity(qnty,id,sub_total,c_id){
-    var qnty=$('#'+qnty)
-    var sub_total =$('#'sub_total)
-
-    $.ajax({
-        type:"GET",
-        url:"/cart/increase_quantity",
-        data:{
-            'id':id,
-            'c_id':c_id
-        },
-        success : function(r){
-            $(qnty).val(r.quantity)
-            $(sub_total).text("Rs:"+r.sub_total)
-            $('#total').text("Rs"+r.total)
-            $('#total_price').text("Rs:"+r.total_price)
-            $('#saved').text("-"+r.saved)
-        },
-        error:function(r){
-            alert('Error Occured')
+function bill(price,total,type){
+        price = parseInt(price);
+        if(type=='plus'){
+            total = parseInt(total) + price;   
         }
-    });
-}
-
-</script> -->
+        else {
+            total = parseInt(total) - price;
+        }
+        let tax = parseFloat((total * 5 /100).toFixed(1));
+        let grandTotal = total + tax;
+        return {total:total,tax:tax,grandtotal:grandtotal}
+    }
+</script>
 </body>
 </html>

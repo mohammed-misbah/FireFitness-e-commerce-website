@@ -58,5 +58,5 @@ def coupon_actives(request,id):
             
             coupon.is_expired =True
             coupon.save()
-        print("//////\\\\\\\\\\")
+
     return redirect('coupon_manage')

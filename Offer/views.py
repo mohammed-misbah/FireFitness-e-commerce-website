@@ -29,10 +29,10 @@ def product_offer(request):
             product = Product.objects.get(prdct_name=product)
             print(product.prdct_name)
             if product.offer_percentage < discount:
-                price = float(product.original_price)
-                product.price = price-price*float(discount)/100
+                price = float(product.price)
+                product.original_price = price-price*float(discount)/100
                 product.offer_percentage = discount
-                print(discount)
+                # print(discount)
                 product.save()
                 messages.success(request,'Offer is Applied')
 
@@ -66,7 +66,7 @@ def delete_product_offer(request,id):
         messages.success(request,'Offer is deleted')
     prdctoffer.delete()
 
-    return redirect('category_offer')
+    return redirect('product_offer')
 
 
 #================Category Offer====================#
@@ -95,8 +95,8 @@ def category_offer(request):
                     print(discount)
                     print(is_active)
                     print(items.prdct_name)
-                    price = float(items.original_price)
-                    items.price=price-price*float(discount)/100
+                    price = float(items.price)
+                    items.original_price=price-price*float(discount)/100
                     items.offer_percentage = discount
                     items.save()
             messages.success(request,'Offer added Successfully')

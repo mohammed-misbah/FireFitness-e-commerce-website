@@ -190,18 +190,18 @@
 				<div class="col-lg-6">
 					<div class="img-big-wrap">
 						<div class="image_field">
-							<a href="#"><img class="big_img" id="img-container" src="{{ single_product.img1.url }}" alt="" ></a>
+							<a href="#"><img class="big_img" style=" margin-left:250px; width: 250px; height: 370px;" id="img-container" src="{{ single_product.img1.url }}" alt="" ></a>
 						</div>
 						{% comment %} <h1><img class="big_img" src="{{ single_product.img1.url }}" alt="" ></h1> {% endcomment %}
 					</div>
 					<div class="thumbs-wrap">
-						<a href="#" class="item-thumb" style="width: 75px; height: 75px;"> <img class="small_img" src="{{ single_product.img1.url }}"
+						<a href="#" class="item-thumb" > <img class="small_img" style=" width: 100px; height: 150px;" src="{{ single_product.img1.url }}"
 						  height="100px"></a>
-						<a href="#" class="item-thumb" style="width: 75px; height: 75px;"> <img class="small_img" src="{{ single_product.img2.url }}"
+						<a href="#" class="item-thumb" > <img class="small_img" style=" width: 100px; height: 150px;" src="{{ single_product.img2.url }}"
 						  height="100px"></a>
-						<a href="#" class="item-thumb" style="width: 75px; height: 75px;"> <img class="small_img" src="{{ single_product.img3.url }}"
+						<a href="#" class="item-thumb" > <img class="small_img" style=" width: 100px; height: 150px;" src="{{ single_product.img3.url }}"
 						  height="100px"></a>
-						<a href="#" class="item-thumb" style="width: 75px; height: 75px;"> <img class="small_img" src="{{ single_product.img3.url }}"
+						<a href="#" class="item-thumb" > <img class="small_img" style=" width: 100px; height: 150px;" src="{{ single_product.img3.url }}"
 						  height="100px"></a>  
 					  </div> 
 				</div>
@@ -215,13 +215,13 @@
 						    <p>{{ single_product.prdct_desc }}</p>
 						</div>
 							<span class="stext-105 cl3" style="font-weight: bolder;">
-								₹ {{ single_product.price }} <span style="font-weight: 100;"><strike>₹ {{single_product.original_price}}</strike></span>   <span style="color:orange;">
+								₹{{single_product.original_price}} <span style="font-weight: 100;"><strike>₹ {{ single_product.price }} </strike></span>   <span style="color:orange;">
 									({{single_product.offer_percentage }}% OFF)
 								</span> 
 						<div class="row">
 							<div class="item-option-select mb-3 y-3">
 								<h6>Flavour</h6>
-								<select name="flavour" class="form-control" required>
+								<select name="flvr" id="flavour" class="form-control" required>
 									<option value="" disabled selected>select</option>
 									{% for i in single_product.variation_set.flavour %}
 									<option value="{{ i.variation_value |lower }}">{{ i.variation_value | capfirst }}</option>
@@ -232,7 +232,7 @@
 						<div class="row">
 							<div class="item-option-select mb-3">
 								<h6>Quantity</h6>
-								<select name="size" class="form-control">
+								<select name="size" id="SIZE" class="form-control">
 									<option value="" disabled selected>select</option>
 									{% for i in single_product.variation_set.size %}
 									<option value="{{ i.variation_value | lower }}">{{ i.variation_value | capfirst }}</option>
@@ -251,7 +251,7 @@
 						</div>
 						<div class="card_area d-flex align-items-center">
 							{% if single_product.stock > 0 %}
-							<a href="{% url 'add_cart' single_product.id %}" class="primary-btn" >Add to Cart</a>
+							<a  href="{% url 'add_cart' single_product.id %}" onclick="return addcart()" class="primary-btn" >Add to Cart</a>
 							 {% else %}
 							 
 							<h5 class="text-danger" >Out of Stock</h5>
@@ -839,6 +839,20 @@
 	<script src="{% static 'js/gmaps.min.js' %}"></script>
 	<script src="{% static 'js/main.js' %}"></script>
     <script src="{% static 'js/zoomsl.js' %}" type="text/javascript"></script>
+	<script>
+	function addcart()
+	{
+	a = document.getElementById('flavour').value
+	b = document.getElementById('SIZE').value
+	
+	if(a==0 || b==0){
+		alert("Select Variation")
+		return false
+	}else{
+		$ajax
+	}
+	}
+	</script>
 	
 </body>
 

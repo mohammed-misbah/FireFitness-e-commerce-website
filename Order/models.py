@@ -3,7 +3,7 @@ from Product.models import Product
 from Protien.models import User
 from Cart.models import Variation
 import datetime
-current_date =  .date.today()
+current_date = datetime.date.today()
 
 # Create your models here.
 
@@ -44,8 +44,8 @@ class Order(models.Model):
 class OrderProduct(models.Model):
     order        = models.ForeignKey(Order, on_delete=models.CASCADE,null=True)
     order_number = models.CharField(default=1,max_length=20)
+    product      = models.ForeignKey(Product, on_delete=models.CASCADE,null=True)
     user         = models.ForeignKey(User, on_delete=models.CASCADE)
-    product      = models.ForeignKey(Product, on_delete=models.CASCADE)
     variation    = models.ManyToManyField(Variation, blank=True)
     quantity     = models.IntegerField()
     product_price = models.FloatField()
@@ -56,9 +56,11 @@ class OrderProduct(models.Model):
     
 
 
-    def __str__(self):
-        return self.product.prdct_name
 
+class Return_request(models.Model):
+     user = models.ForeignKey(User, on_delete= models.CASCADE)
+     order_number = models.CharField(max_length=20, default=1)
+     reason = models.CharField(max_length= 500)
     
 
 

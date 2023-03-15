@@ -16,8 +16,8 @@
   <link rel="stylesheet" href="{% static 'Admin/dist/css/adminlte.min.css'%}">
 </head>
 <body>
-    <section >
-        <h1 style="width:100vw;text-align:center;">Sales Report</h1>
+    <section class="navbar-dark" >
+        <h1 style="width:100vw;text-align:center;color:white;">Sales Report</h1>
         <div class="col ">
           <div id="content"  class="p-4">
         
@@ -34,7 +34,7 @@
                   } 
                 </style>
                <div class="col">
-                <h5 class="card-title">Sales of Day:</h5>
+                <h5 class="card-title" style="color:white;">Sales of Day:</h5>
                 <form name="myForm" method="post">
                   {% csrf_token %}
                   <div class="d-flex">
@@ -44,30 +44,27 @@
                 </form>
               </div>
               <div class="col">
-                <h5 class="card-title">Monthly Sales:</h5>
+                <h5 class="card-title" style="color:white;">Monthly Sales:</h5>
                 <form name="myForm1" method="post">
                   {% csrf_token %}
                   <div class="d-flex">
                     <input  class="form-control" type="month" name="month" required>
                     <input type="submit" class="btn-primary ms-2" value="submit" onclick="">
                   </div>
-                
                 </form>
               </div> 
               <div class="col">
-                <h5 class="card-title"> Sales:</h5>
+                <h5 class="card-title" style="color:white;"> Sales:</h5>
                 <form name="myForm1" method="post">
                   {% csrf_token %}
                   <div class="d-flex">
                     <input  class="form-control" type="year" name="year" required>
                     <input type="submit" class="btn-primary ms-2" value="submit" onclick="">
                   </div>
-                
                 </form>
               </div> 
-              
               <div class="col" style="margin-top:-8px;">
-                <h5 class="card-title mt-2">Yearly Sales:</h5> 
+                <h5 class="card-title mt-2" style="color:white;">Yearly Sales:</h5> 
                 <form name="myForm2" method="post">
                   {% csrf_token %}
                   <div class="d-flex">
@@ -75,12 +72,10 @@
                     <input  class="form-control" type="date" name="date2" required>
                     <input type="submit" class="btn-primary ms-2" value="submit" onclick="">
                   </div>
-                
                 </form>
               </div>  
             </div>
-            </div>
-          
+          </div> 
         </div>
         <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
             <script>
@@ -89,11 +84,9 @@
               {% endfor %}
             </script>
         </section>
-        <section >
-
-            <div class="col-12 ">
+        <section class="color:dark;" >
+            <div class="col-12 color:dark; ">
                 <div class="card recent-sales overflow-auto">
-            
                   <div class="filter">
                     <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
@@ -153,3 +146,5 @@
     
 </body>
 </html>
+
+

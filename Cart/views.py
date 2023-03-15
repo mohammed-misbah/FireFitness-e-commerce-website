@@ -61,13 +61,20 @@ def add_cart(request,product_id):
                 if len(product_variation)> 0:
                     item.variation.clear()
                     item.variation.add(*product_variation)
+               
                 item.save()
         else:
-            cart_item = CartItem.objects.create(product=product,quantity=1,user=current_user)
-            if len(product_variation) > 0:
-                cart_item.variation.clear()
-                cart_item.variation.add(*product_variation)
+            cart_item = CartItem()
+            # product = Product.objects.get(id=cart_item.product_id)
+            cart_item.product = product
+            cart_item.quantity = 1
+            cart_item.user = current_user
+            # cart_item = CartItem.objects.create(product=product,quantity=1,user=current_user)
+            if len(product_variation)>0:
+                    cart_item.variation.clear()
+                    cart_item.variation.add(*product_variation)
             cart_item.save()
+            
         return redirect('cart')
 
 
@@ -123,7 +130,7 @@ def add_cart(request,product_id):
                 cart_item.save()
         return redirect('cart')
 
-#=============== Cart ===================#
+#=============== Cart ==================#
 
 def cart(request,total=0,quantity=0,cart_items=None):
     discount=0
@@ -170,17 +177,51 @@ def cart(request,total=0,quantity=0,cart_items=None):
     }
     return render (request,'cart.html',context)
 
+
+# def delete_cart_item(request,id,product_id):
+#     try:
+#         product = get_object_or_404(Product,id=product_id)
+#         if request.user.is_authenticated:
+#             cart_item = CartItem.objects.get(product=product,user=request.user,id=id)
+            
+#         else:
+#             cart = Cart.objects.get(cart_id = _cart_id(request))
+#             cart_item = CartItem.objects.get(product=product,id=id,cart=cart)
+#         if cart_item.quantity > 1:
+#             cart_item.quantity -= 1
+#             cart_item.save()
+#         else:
+#             cart_item.delete()
+#     except:
+#         pass
+#     return redirect('cart')
+
+
+
+# def decrease_quantity(request,product_id,id):
+#     product = get_object_or_404(Product, id=product_id)
+#     if request.user.is_authenticated:
+#         cart_item = CartItem.objects.get(product=product,user=request.user,id=id)
+#     else:
+#         cart = Cart.objects.get(cart_id =_cart_id(request))
+#         cart_item = CartItem.objects.get(product=product,cart=cart,id=id) #it brings cart items
+    
+#     cart_item.delete()
+#     return redirect('cart')
+
+
 #===============Remove Cart==============#
 
-def delete_cart_item(request,id,product_id):
+def remove_cart(request,  cart_item_id):
+
+    # product = get_object_or_404(Product, id=product_id)
     try:
-        product = get_object_or_404(Product,id=product_id)
         if request.user.is_authenticated:
-            cart_item = CartItem.objects.get(product=product,user=request.user,id=id)
-            
+            cart_item = CartItem.objects.get(user=request.user, id=cart_item_id)
+            # print(cart_item.variations)
         else:
-            cart = Cart.objects.get(cart_id = _cart_id(request))
-            cart_item = CartItem.objects.get(product=product,id=id,cart=cart)
+            cart = Cart.objects.get(cart_id=_cart_id(request))
+            cart_item = CartItem.objects.get(cart=cart, id=cart_item_id)
         if cart_item.quantity > 1:
             cart_item.quantity -= 1
             cart_item.save()
@@ -188,24 +229,88 @@ def delete_cart_item(request,id,product_id):
             cart_item.delete()
     except:
         pass
+    
     return redirect('cart')
-
+    
 #============Decrease Quantity=============#
 
-def decrease_quantity(request,product_id,id):
+def remove_cart_item(request, product_id, cart_item_id):
     product = get_object_or_404(Product, id=product_id)
     if request.user.is_authenticated:
-        cart_item = CartItem.objects.get(product=product,user=request.user,id=id)
+        cart_item = CartItem.objects.get(product=product, user=request.user, id=cart_item_id)
     else:
-        cart = Cart.objects.get(cart_id =_cart_id(request))
-        cart_item = CartItem.objects.get(product=product,cart=cart,id=id) #it brings cart items
-    
+        cart = Cart.objects.get(cart_id=_cart_id(request))
+        cart_item = CartItem.objects.get(product=product, cart=cart, id=cart_item_id)
     cart_item.delete()
     return redirect('cart')
 
+#================Upadate Cart===================#
 
+def updatecart(request):
+    print('Is entered')
+    user = 'guest'
+    if 'user' in request.session:
+        user = request.session['user']
+    
+    else:
+        guest_id = request.COOKIES['sessionid']
 
+    print('Is entered')
+    if request.method == 'POST':
+        quantity= request.POST.get('quantity')
+        cart_id = request.POST.get('cart_id')
+        task = request.POST.get('task')
 
+        try:
+            user = User.objects.get(email = user)
+        except:
+            # pass
+            user = guest_id
+
+        product = CartItem.objects.get(id = cart_id)
+        stock = Product.objects.get(id = product.product.id)
+    
+        stock_balance = stock.stock
+        print('got quantity', quantity)
+
+        if task == 'plus':
+            if product.quantity < stock.stock:
+                product.quantity += 1
+                updated_quantity = product.quantity
+
+                product.save()
+                
+            else:
+                pass
+            if stock_balance > 1:
+                print('updated quantity', updated_quantity)
+                # stock manage
+                stock.stock = stock.stock - 1
+            
+            else:
+                updated_quantity = quantity
+            
+        else:
+            if product.quantity > 1 :
+                product.quantity -= 1
+                updated_quantity = product.quantity
+                product.save()
+
+            if updated_quantity >= 1:
+                product.quantity = updated_quantity
+                print('updated quantity', updated_quantity)
+                stock.stock = stock.stock + 1
+            
+            else:
+
+                updated_quantity = quantity
+
+        # print('saved the changes in database')
+        return JsonResponse({
+            'updated_quantity' : updated_quantity
+        })
+    
+    return JsonResponse({'user':'user_info'})
 
 
 

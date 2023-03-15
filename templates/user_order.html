@@ -122,9 +122,9 @@
                     <table class="table table-hover ">
                       <thead>
                         <tr>
-                          <th scope="col">Product</th>
-                          {% comment %} <th scope="col">Name</th>
-                          <th scope="col">Phone</th> {% endcomment %}
+                    
+                        <th scope="col">Product</th> 
+                          {% comment %} <th scope="col">Phone</th>  {% endcomment %}
                           <th scope="col">Order Total</th>
                           <th scope="col">Date</th>
                           <th scope="col">Status</th>
@@ -135,46 +135,45 @@
                         </tr>
                       </thead>
                       <tbody>
-                            {% for i in order %}
+                            {% for i in orderproduct %}
                         <tr>
-                            {% for order in orderproduct %}
-                            {% if order.order_number == i.order_number %}
-                            
+                             {% comment %} {% for ordr in orderproduct %}  {% endcomment %}
+                            {% comment %} {% if ordr.order_number == ordr.order_number %}  {% endcomment %}
+                           
                             <div style="display: inline-block;">
-                                <th><div style="display: grid;"><a href="{% url 'order_details' order.id %}"><img class="img-fluid" style="width: 2rem;" src="{{ order.product.img1.url }}" alt=""></a></div></th>
-                            </div>
-                            {% endif %}
-                            {% endfor %}
+                                <th><div style="display: grid;"><a href="{% url 'order_details' i.order.id %}"><img style=" width: 80px; height: 70px;" class="img-fluid" src="{{ i.product.img1.url }}" alt=""></a></div></th>
+                            </div> 
+                            {% comment %} {% endif %}  {% endcomment %}
+                            
+                            {% comment %} {% endfor %}  {% endcomment %}
                             {% comment %} {% url 'order_detail' order.id %} {% endcomment %}
                           {% comment %} <th scope="row"><a href="{% url 'order_detail' order.id %}">{{order.order_number}}</a></th>{% endcomment %}
                            {% comment %} <td>{{i.user.last_name}}</td>
                            <td>{{i.address.phone}}</td>  {% endcomment %}
-                           <td>{{i.phone}}</td>
-                          <td>Rs:{{i.order_total}}</td>
-                            <td>{{i.created_at}}</td>
-                           <td>{{i.status}}</td>
-                           <td>{{i.payment_mode}}</td>
+                                                       
+                         {% comment %} <td><a href="{% url 'order_details' i.id %}">{{i.product.prdct_name}}</td> </a>  {% endcomment %}
+                          <td>Rs:{{i.order.order_total}}</td></a>
+                            <td>{{i.order.created_at}}</td>
+                           <td>{{i.order.status}}</td>
+                           <td>{{i.order.payment_mode}}</td>
                            <td>
-                                <form action="" method="POST">
-                                {% csrf_token %}
-                                
-                                <input type="hidden" class="can" value="{{order.id}}">
-                                {% if order.status == 'Cancelled'  %}
-                                <p>order Cancelled</p>
+                                {% comment %} <form action="" method="POST"> {% endcomment %}
+                                {% if i.order.status == 'Cancelled'  %}
+                                <p class="text-danger border border-danger text-center">Order Cancelled</p>
     
-                                {% elif order.status == 'Delivered' %}
-                                <button type="submit" id="cancel-btn"  class="btn btn-outline-info ">Return</a></button>
-                                </form>
-                                {% elif order.status == 'Return Requested' %}
-                                <button type="submit" id="cancel-btn"  class="btn btn-outline-info ">Return Requested</button>
+                                {% elif i.order.status == 'Delivered' %}
+                               <a class="btn btn-primary" href="{% url 'return_order' i.order.id %}">Return</a>
+                              
+                                {% elif i.order.status == 'Return Requested' %}
+                                <button type="submit" id="cancel-btn"  class="btn btn-outline-warning ">Return Requested</button>
     
                                 {% else %}
-                                <a class="list-group-item tp_btn" href="{% url 'cancel_order' i.id %}">Cancel</a>
-                                
+                                <a class="list-group-item tp_btn" href="{% url 'cancel_order' i.order.id %}">Cancel</a>
+                                {% comment %} <button type="submit" id="cancel-btn"  class="list-group-item tp_btn">Cancel</button> {% endcomment %}
                                 {% endif %}
                               <!-- </form> -->
                            </td>
-                           
+                            
                         </tr>
                     {% endfor %}
     
@@ -192,7 +191,6 @@
     
     
     </section>
-    
 
   <!-- start footer Area -->
 <footer class="footer-area section_gap">

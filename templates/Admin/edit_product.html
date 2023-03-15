@@ -885,15 +885,15 @@
                   </div>
                   <select id="selection" name="cat_list" class="browser-default custom-select">
                     <option selected>Select Category</option>
-                    {% for i in categorylist %}
-                    <option value="i.id">{{i.category_name}}</option>
+                    {% for cat in category %}
+                    <option value="cat.id">{{cat.category_name}}</option>
                     {% endfor %}
                    
                   </select>
                   <select id="selection" name="subcat_list" class="browser-default custom-select">
                     <option selected>Select Sub-Category</option>
-                    {% for i in subcategorylist %}
-                    <option value="i.id">{{i.subcat_name}}</option>
+                    {% for subcat in subcategory %}
+                    <option value="subcat.id">{{subcat.subcat_name}}</option>
                     {% endfor %}
                     
                   </select>

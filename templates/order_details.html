@@ -122,7 +122,7 @@
                             <!-- col-lg-6 start here -->
                             <div class="invoice-from">
                                 <ul class="list-unstyled text-right">
-                                    <li><strong>Invoiced To:</strong></li>
+                                    <li><h4><strong>Invoiced To:</h4></strong></li>
                                     <li>{{address.first_name}}{{address.last_name}}</li>
                                     <li>{{address.address_1}}{{address.address_2}}</li>
                                     <li>{{address.country}}{{address.state}}{{address.dist}}</li>
@@ -157,42 +157,45 @@
                                         </thead>
                                         <tbody>
                                             <!-- <td>{{order_detail.product}}</td> -->
-                                          {% for i in order_details %}
+                                            {% for i in order_details %}
                                             <tr>
-                                                <td scope="row"><div style="width: 5rem;"><img class="img-fluid" src="{{ i.product.img1.url }}" alt=""></div></td>
+                                               
+                                                 <td scope="row"><div style="width: 5rem;"><img class="img-fluid" src="{{ i.product.img1.url }}" alt=""></div></td>
                                                 <td>{{i.product.prdct_name}}
                                                   <p class="text-muted small">
                                                     {% if i.variation.all %}
-                                                      {% for i in variation %}
-                                                        {{ i.variation_category | capfirst }} : {{ i.variation_value | capfirst }} <br>
+                                                      {% for var in variation %}
+                                                        {{ var.variation_category | capfirst }} : {{ var.variation_value | capfirst }} <br>
                                                       {% endfor %}
                                                     {% endif %}
                                                   </p>
                                                 </td>
                                                 <td class="text-center">{{i.quantity}}</td>
-                                                <td class="text-center">Rs:{{i.product_price}}</td>
+                                                <td class="text-center">Rs:{{i.product_price}}</td> 
                                             </tr>
-                                          {% endfor %}
+                                            {% endfor %}
                                         </tbody>
                                         <tfoot>
+                                           
                                             <tr>
                                                 <th></th>
                                                 <th colspan="2" class="text-right">Sub Total:</th>
-                                                <th class="text-center">Rs:{{subtotal}}</th>
+                                                <th class="text-center">Rs:{{subtotal|floatformat:"2"}}</th>
                                             </tr>
                                             <tr>
                                                 <th></th>
   
                                                 <th colspan="2" class="text-right">Tax:</th>
-                                                <th class="text-center">Rs:{{tax}}</th>
+                                                <th class="text-center">Rs:{{order.tax|floatformat:"2"}}</th>
                                             </tr>
   
                                             <tr>
                                                 <th></th>
   
                                                 <th colspan="2" class="text-right">Grand Total:</th>
-                                                <th class="text-center">Rs:{{order_total}}</th>
+                                                <th class="text-center">Rs:{{order.order_total|floatformat:"2"}}</th>
                                             </tr>
+                                            
                                         </tfoot>
                                     </table>
                                 </div>

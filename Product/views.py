@@ -42,11 +42,11 @@ def add_product(request):
             'product':product
         }
         if request.method =='POST':
-            if request.POST.get('prdct_name') and request.POST.get('prdct_price') and request.POST.get('prdct_stock') and request.POST.get('prdct_desc') and request.POST.get('subcat_list') and request.POST.get('cat_list') and request.FILES['prdct-img1'] and request.FILES['prdct-img2'] and request.FILES['prdct-img3'] and request.FILES['prdct-img4']:
+            if request.POST.get('prdct_name') and request.POST.get('prdct_price')  and request.POST.get('prdct_stock') and request.POST.get('prdct_desc') and request.POST.get('subcat_list') and request.POST.get('cat_list') and request.FILES['prdct-img1'] and request.FILES['prdct-img2'] and request.FILES['prdct-img3'] and request.FILES['prdct-img4']:
                 product_name = request.POST.get('prdct_name')
                 product_desc = request.POST.get('prdct_desc')
                 product_price= request.POST.get('prdct_price')
-                product_stock= request.POST.get('prdct_stock')
+                product_stock= request.POST.get('prdct_stock')  
                 if Product.objects.filter(prdct_name=product_name).exists():
                     messages.error(request,'Product name already exists')
                     return redirect ('admin_productlist')
@@ -56,8 +56,8 @@ def add_product(request):
                 product.prdct_desc  = product_desc
                 product.price       = product_price
                 product.stock       = int(product_stock)
-                product.subcategory = request.POST.get('subcategory')
-                product.category    = request.POST.get('category')
+                product.category_id    = request.POST.get('cat_list')
+                product.subcategory_id = request.POST.get('subcat_list')
                 if 'prdct-img1' in request.FILES:
                         product.img1 =request.FILES['prdct-img1']
                 if 'prdct-img2' in request.FILES:
@@ -86,15 +86,15 @@ def add_product(request):
 def edit_product(request):
     category = Category.objects.all()
     subcategory = Subcategory.objects.all()
-    # productlist    = Product.objects.all()
+    productlist    = Product.objects.all()
     if request.method =='POST':
         product_name = request.POST.get('prdct_name')
         slug= slugify(product_name)
         description = request.POST.get('prdct_desc') 
         price = request.POST.get('prdct_price') 
         stock = request.POST.get('prdct_stock')
-        subcategory = request.POST.get('subcategorylist')
-        category    = request.POST.get('categorylist')
+        subcategory = request.POST.get('subcat_list')
+        category    = request.POST.get('cat_list')
         product_img1 = request.FILES.get('prdct-img1')
         product_img2 = request.FILES.get('prdct-img2')
         product_img3 = request.FILES.get('prdct-img3')
@@ -105,9 +105,9 @@ def edit_product(request):
         
     else:
         context = {
-            'categorylist':category,
-            'subcategorylist':subcategory,
-            # 'product'  :productlist
+            'category':category,
+            'subcategory':subcategory,
+            'product'  :productlist
         }
     return render(request,'Admin/edit_product.html',context)
 
@@ -117,6 +117,7 @@ def prdctlist_delete(request,id):
     list = Product.objects.get(id=id)
     list.delete()
     return redirect('admin_productlist')
+
 #=============Product List Edit===========#
 
 def prdctlist_edit(request,id):

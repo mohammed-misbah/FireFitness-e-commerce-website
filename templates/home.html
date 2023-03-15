@@ -299,7 +299,7 @@
 					<!-- single product -->
 					<div class="col-lg-3 col-md-6">
 						<div class="single-product">
-							<a href="{% url 'product_details' i.id %}" class="img-wrap"><img class="img-fluid" src="/media/{{ i.img1 }}" alt=""></a>
+							<a href="{% url 'product_details' i.id %}" class="img-wrap"><img style=" width: 200px; height: 170px;" class="img-fluid" src="/media/{{ i.img1 }}" alt=""></a>
 							<div class="product-details">
 								<a href="{% url 'product_details' i.id %}" class="title"><h5>{{ i.prdct_name }}</h5></a>
 								<div class="price">
@@ -321,7 +321,7 @@
 									</a> 
 								</div>
 									<span class="stext-105 cl3" style="font-weight: bolder;">
-										₹ {{ i.price }} <span style="font-weight: 100;"><strike>₹ {{i.original_price}}</strike></span>   <span style="color:orange;">
+										₹ {{i.original_price}}<span style="font-weight: 100;"><strike>₹{{ i.price }}</strike></span>   <span style="color:orange;">
 											({{i.offer_percentage }}% OFF)
 										</span> 
 								

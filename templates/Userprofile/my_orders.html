@@ -124,7 +124,7 @@
                   <a class="btn btn-light btn-block" href="{% url 'logout' %}"> <i class="fa fa-power-off"></i> <span class="text">Log out</span> </a>
             </aside>
         </div>
-        <main class="col-md-9" style="margin-left:270px;margin-top:-210px; width:700px;">
+        <main class="col-xd-12" style="margin-left:270px;margin-top:-210px; width:700px;">
             <article class="card">
             <header class="card-header d-flex justify-content-center">
                 <h4><strong class="d-inline-block mr-3">Your Order History</strong></h4>
@@ -137,8 +137,8 @@
                       <thead>
                         <tr>
                           <th scope="col">Product</th>
-                          {% comment %} <th scope="col">Name</th>
-                          <th scope="col">Phone</th> {% endcomment %}
+                          {% comment %} <th scope="col">Name</th> {% endcomment %}
+                          {% comment %} <th scope="col">Phone</th> {% endcomment %}
                           <th scope="col">Order Total</th>
                           <th scope="col">Date</th>
                           <th scope="col">Status</th>
@@ -149,41 +149,34 @@
                         </tr>
                       </thead>
                       <tbody>
-                            {% for i in order %}
+                            {% for i in orderproduct %}
                         <tr>
-                            {% for order in orderproduct %}
-                            {% if order.order_number == i.order_number %}
+                           
                             
                             <div style="display: inline-block;">
-                                <th><div style="display: grid;"><a href="{% url 'order_details' order.id %}"><img class="img-fluid" style="width: 2rem;" src="{{ order.product.img1.url }}" alt=""></a></div></th>
+                                <th><div style="display: grid;"><a href="{% url 'order_details' i.order.id %}"><img style=" width: 75px; height: 65px;" class="img-fluid" src="{{ i.product.img1.url }}" alt=""></a></div></th>
                             </div>
-                            {% endif %}
-                            {% endfor %}
-                            {% comment %} {% url 'order_detail' order.id %} {% endcomment %}
-                          {% comment %} <th scope="row"><a href="{% url 'order_detail' order.id %}">{{order.order_number}}</a></th>{% endcomment %}
-                           {% comment %} <td>{{i.user.last_name}}</td>
-                           <td>{{i.address.phone}}</td>  {% endcomment %}
-                           <td>{{i.phone}}</td>
-                          <td>Rs:{{i.order_total}}</td>
-                            <td>{{i.created_at}}</td>
-                           <td>{{i.status}}</td>
-                           <td>{{i.payment_mode}}</td>
+                            
+                            
+                          <td>Rs:{{i.order.order_total}}</td></a>
+                            <td>{{i.order.created_at}}</td>
+                           <td>{{i.order.status}}</td>
+                           <td>{{i.order.payment_mode}}</td>
                            <td>
-                                <form action="" method="POST">
-                                {% csrf_token %}
+                                
                                 
                                 <input type="hidden" class="can" value="{{order.id}}">
-                                {% if order.status == 'Cancelled'  %}
-                                <p>order Cancelled</p>
+                                {% if i.order.status == 'Cancelled'  %}
+                                <p class="text-danger border border-danger text-center">Order Cancelled</p>
     
-                                {% elif order.status == 'Delivered' %}
-                                <button type="submit" id="cancel-btn"  class="btn btn-outline-info ">Return</a></button>
+                                {% elif i.order.status == 'Delivered' %}
+                                <a class="btn btn-primary" href="{% url 'return_order' i.order.id %}">Return</a>
                                 </form>
-                                {% elif order.status == 'Return Requested' %}
-                                <button type="submit" id="cancel-btn"  class="btn btn-outline-info ">Return Requested</button>
+                                {% elif i.order.status == 'Return Requested' %}
+                                <button type="submit" id="cancel-btn"  class="btn btn-outline-warning ">Return Requested</button>
     
                                 {% else %}
-                                <a class="list-group-item tp_btn" href="{% url 'cancel_order' i.id %}">Cancel</a>
+                                <a class="list-group-item tp_btn" href="{% url 'cancel_order' i.order.id %}">Cancel</a>
                                 
                                 {% endif %}
                               <!-- </form> -->

@@ -193,7 +193,7 @@
 					  {% for i in products %}
 						<div class="col-lg-4 col-md-6 productCard">
 							<div class="single-product">
-									<a href="{% url 'product_details' i.id %}" class="img-wrap " ><img class="img-fluid" src="{{ i.img1.url }}" alt=""></a>
+									<a href="{% url 'product_details' i.id %}" class="img-wrap " ><img style=" width: 200px; height: 170px;" class="img-fluid" src="{{ i.img1.url }}" alt=""></a>
 								<div class="product-details">
 									<a href="{% url 'product_details' i.id %}" class="title productName" ><h5>{{ i.prdct_name}}</h5></a>
 									

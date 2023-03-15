@@ -375,11 +375,11 @@ def sales_report_date(request):
                     SalesReport.objects.all().delete()
                     for i in data:
                         sales = SalesReport()
-                        sales.productName = i.product.product_name
+                        sales.productName = i.product.prdct_name
                         sales.categoryName = i.product.category.category_name
                         sales.date = i.created_at
                         sales.quantity = i.quantity
-                        sales.productPrice = i.product_price
+                        sales.productPrice = i.product.price
                         sales.save()
                     sales = SalesReport.objects.all()
                     total = SalesReport.objects.all().aggregate(sum('productPrice'))
@@ -412,7 +412,7 @@ def sales_report_date(request):
             
                     for i in date_check:
                         sales = SalesReport()
-                        sales.productName = i.product.product_name
+                        sales.productName = i.product.prdct_name
                         sales.categoryName = i.product.category.category_name
                         sales.date = i.created_at
                         sales.quantity = i.quantity
@@ -447,7 +447,7 @@ def sales_report_date(request):
             
                     for i in data_range:
                         sales = SalesReport()
-                        sales.productName = i.product.product_name
+                        sales.productName = i.product.prdct_name
                         sales.categoryName = i.product.category.category_name
                         sales.date = i.created_at
                         sales.quantity = i.quantity
@@ -460,12 +460,13 @@ def sales_report_date(request):
                 else:
                     for i in data_range:
                         sales = SalesReport()
-                        sales.productName = i.product.product_name
+                        sales.productName = i.product.prdct_name
                         sales.categoryName = i.product.category.category_name
                         sales.date = i.created_at
                         sales.quantity = i.quantity
                         sales.productPrice = i.product_price
                         sales.save()
+                    print(sales)
                     sales = SalesReport.objects.all()
                     total = SalesReport.objects.all().aggregate(sum('productPrice'))
                     context = { 'sales':sales,'total':total['productPrice__sum']}
@@ -477,34 +478,40 @@ def sales_report_date(request):
             SalesReport.objects.all().delete()
             for i in data:
                 sales = SalesReport()
-                sales.productName = i.product.product_name
+                sales.productName = i.product.prdct_name
                 sales.categoryName = i.product.category.category_name
                 sales.date = i.created_at
                 sales.quantity = i.quantity
                 sales.productPrice = i.product_price
                 sales.save()
             sales = SalesReport.objects.all()
-            total = SalesReport.objects.all().aggregate(sum('productPrice'))
-            context = { 'sales':sales,'total':total['productPrice__sum']}
+            T = SalesReport.objects.all()
+            total=0
+            for i in T:
+                total=total+i.productPrice
+                #print(i.productPrice,"<<>>",type(i.productPrice))
+            context = { 'sales':sales,'total':total}
             return render(request,'Admin/sales_report.html',context)
 
         else:
+            data = OrderProduct.objects.all()
             for i in data:
                 sales = SalesReport()
-                sales.productName = i.product.product_name
+                sales.productName = i.product.prdct_name
                 sales.categoryName = i.product.category.category_name
-                sales.date = i.created_at
+                # print(sales.categoryName,"<<>>")
+                sales.date = i.product.created_date
                 sales.quantity = i.quantity
-                sales.productPrice = i.product_price
+                sales.productPrice = i.product.price
                 sales.save()
             sales = SalesReport.objects.all()
             total = SalesReport.objects.all().aggregate(sum('productPrice'))
             context = { 'sales':sales,'total':total['productPrice__sum']}
-            return render(request,'Admin/sales_report.html',context)
+            return render(request,'Admin/sales_report.html',)
         
-    else:
-        messages.warning(request,"Nothing Found!!")
+    # else:
+    #     messages.warning(request,"Nothing Found!!")
     
-    return render(request,'Admin/sales_report.html')
+    return render(request,'Admin/sales_report.html',context)
 
 
